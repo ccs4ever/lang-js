@@ -2,46 +2,29 @@ package main
 
 import (
 	"fmt"
-	"github.com/gopherjs/gopherjs/js"
-	"runtime"
+	"math/big"
+
+	"cuelang.org/go/cue"
 )
 
 func main() {
-	d3root := Require("d3")
-	println(d3root.Call("max", []int{10, 20}).Float())
-	js.Global.Set("pet", map[string]interface{}{
-		"New": New,
-	})
+	const config = `
+TimeSeries: {
+  "2019-09-01T07:00:00Z": 36
 }
-
-type Pet struct {
-	name string
+TimeSeries: {
+  "2019-09-01T07:10:59Z": 200
 }
+`
+	var r cue.Runtime
 
-func New(name string) *js.Object {
-	fmt.Println("calling name")
-	return js.MakeWrapper(&Pet{name})
-}
-
-func (p *Pet) Name() string {
-	return p.name
-}
-
-func (p *Pet) SetName(name string) {
-	p.name = name
-}
-
-func Require(module string) *js.Object {
-	if runtime.GOARCH != "js" {
-		return nil
+	instance, err := r.Compile("test", config)
+	if err != nil {
+		fmt.Println(err)
 	}
 
-	switch {
-	case js.Global.Get("gopm_modules") != js.Undefined:
-		return js.Global.Get("gopm_modules").Get(module)
-	case js.Global.Get("require") != js.Undefined:
-		return js.Global.Call("require", module)
-	default:
-		return nil
-	}
+	var bigInt big.Int
+	instance.Lookup("TimeSeries").Lookup("2019-09-01T07:10:59Z").Int(&bigInt)
+	fmt.Println(bigInt.String())
+
 }
