@@ -1,3 +1,3 @@
-const wasm = require('./main.go');
+import wasm from './main.go';
 
 console.log(wasm);
