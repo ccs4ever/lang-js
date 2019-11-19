@@ -1,2 +1,6 @@
 github.com/aaronpowell/webpack-golang-wasm-async-loader v0.1.1-0.20190411004941-a59bd25fb630 h1:Cr33UQVRTnvo3Iiur7slN8V7xJbL9iiuRE8a8AyGdFo=
 github.com/aaronpowell/webpack-golang-wasm-async-loader v0.1.1-0.20190411004941-a59bd25fb630/go.mod h1:VU4cr4THfNFFVh8sA959Girn/S/BLCTHhNXV7okbWv0=
+github.com/shurcooL/go v0.0.0-20190704215121-7189cc372560 h1:SpaoQDTgpo2YZkvmr2mtgloFFfPTjtLMlZkQtNAPQik=
+github.com/shurcooL/go v0.0.0-20190704215121-7189cc372560/go.mod h1:TDJrrUr11Vxrven61rcy3hJMUqaf/CLWYhHNPmT14Lk=
+github.com/shurcooL/go-goon v0.0.0-20170922171312-37c2f522c041 h1:llrF3Fs4018ePo4+G/HV/uQUqEI1HMDjCeOf2V6puPc=
+github.com/shurcooL/go-goon v0.0.0-20170922171312-37c2f522c041/go.mod h1:N5mDOmsrJOB+vfqUK+7DmDyjhSLIIBnXo9lvZJj3MWQ=
