@@ -1,4 +1,3 @@
-require('../build/wasm_exec');
-const wasm = require('../build/lib.wasm');
+const wasm = require('./main.go');
 
 console.log(wasm);

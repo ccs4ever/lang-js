@@ -7,6 +7,7 @@
   },
   "devDependencies": {
     "golang-wasm-async-loader": "^0.4.1",
-    "webpack": "^4.41.2"
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   }
 }
