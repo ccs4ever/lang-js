@@ -6,10 +6,15 @@ module.exports = {
     path: path.resolve(__dirname, '..', 'dist'),
     filename: 'bundle.js'
   },
-  loaders: [
-    {
-      test: /\.wasm$/,
-      loaders: ['wasm-loader']
-    }
-  ]
+  module: {
+      rules: [
+          {
+              test: /\.go/,
+              use: ['golang-wasm-async-loader']
+          }
+      ]
+  },
+  node: {
+      fs: 'empty'
+  }
 };

@@ -5,9 +5,10 @@ import (
 	"math/big"
 
 	"cuelang.org/go/cue"
+	"github.com/aaronpowell/webpack-golang-wasm-async-loader/gobridge"
 )
 
-func main() {
+func add(i []js.Value) (interface{}, error) {
 	const config = `
 TimeSeries: {
   "2019-09-01T07:00:00Z": 36
@@ -42,5 +43,13 @@ TimeSeries: {
 	var bigInt big.Int
 	instance2.Lookup("TimeSeries", "2019-09-01T07:10:59Z").Int(&bigInt)
 	fmt.Println(bigInt.String())
+}
 
+func main() {
+	c := make(chan struct{}, 0)
+
+	gobridge.RegisterCallback("add", add)
+	gobridge.RegisterValue("someValue", "Hello World")
+
+	<-c
 }
