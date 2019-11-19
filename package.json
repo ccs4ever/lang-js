@@ -3,7 +3,7 @@
   "version": "0.0.14",
   "description": "An npm package for using cuelang from js",
   "scripts": {
-    "build": "webpack "
+    "build": "echo $GOROOT; echo $GOPATH "
   },
   "devDependencies": {
     "golang-wasm-async-loader": "^0.4.1",

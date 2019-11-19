@@ -1,4 +1,4 @@
-module cuelang.org/cuelang/lang-js
+module cuelang.org/js
 
 go 1.12
 
