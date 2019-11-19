@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: path.resolve(__dirname, 'src', 'index.js'),
+  entry: path.resolve(__dirname, 'src', 'index.jsx'),
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
@@ -11,12 +11,17 @@ module.exports = {
   },
   devtool: "source-map",
   module: {
-      rules: [
-          {
-              test: /\.go/,
-              use: ['golang-wasm-async-loader']
-          }
-      ]
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: ["source-map-loader", "babel-loader"]
+      },
+      {
+        test: /\.go/,
+        use: ['golang-wasm-async-loader']
+      }
+    ]
   },
   node: {
       fs: 'empty'
