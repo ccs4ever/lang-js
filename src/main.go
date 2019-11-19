@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"syscall/js"
 
+	"cuelang.org/go/cue"
 	"github.com/aaronpowell/webpack-golang-wasm-async-loader/gobridge"
 )
 
@@ -27,10 +28,30 @@ func err(this js.Value, args []js.Value) (interface{}, error) {
 	return nil, errors.New("This is an error")
 }
 
+func cueEval(this js.Value, args []js.Value) (interface{}, error) {
+	var r cue.Runtime
+
+	println(args[0].String())
+
+	instance, err := r.Compile("test", args[0].String())
+	if err != nil {
+		return nil, err
+	}
+	b, err1 := instance.Value().MarshalJSON()
+	ret := string(b[:])
+	println(ret)
+	if err1 != nil {
+		return nil, err1
+	}
+
+	return ret, nil
+}
+
 func main() {
 	c := make(chan struct{}, 0)
 	println("Web Assembly is ready")
 	gobridge.RegisterCallback("add", add)
+	gobridge.RegisterCallback("cue", cueEval)
 	gobridge.RegisterCallback("raiseError", err)
 	gobridge.RegisterValue("someValue", "Hello World")
 
