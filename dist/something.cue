@@ -4,11 +4,11 @@
 //
 //Omit:: {
 //  orig: {}
-//  bottomOmitValues: {[key=_]: *_|_ | *"remove"}
+//  pathsToOmit: {[_]: true | {} }
 //  nestedOmits: { for k, v in data {[k]: Omit }}
 //  result: { 
 //    for k, v in orig
-//      let nested = (
+//      let shouldReove = (
 //        v & bottomOmitValues[k]
 //        nestedOmit[k] &
 //        { orig: v, bottomOmitValues: (bottomOmitValues[k] | *_) }
@@ -17,20 +17,22 @@
 //        { "\(k)": v } }
 //}
 //
-//omit: data_ & { ["c"]: d: _|_  } & data
+//dataOmitted: { orig: data, bottomOmitValues:
 
 test: {
   keySetFoo: (isKeySet & {struct: { ban: "something" }, key: "foo"}).result
   keySetBan: (isKeySet & {struct: { ban: "something" }, key: "ban"}).result
   keySetFooStruct: (isKeySet & {struct: { ban: { asdfafoo: "something"} }, key: "foo"}).result
   keySetBanStruct: (isKeySet & {struct: { ban: { asdfasfoo: "something"} }, key: "ban"}).result
+  keySetBanStruct: (isKeySet & {struct: { ban: { asdfasfoo: "something"} }, key: "ban"}).result
+  keySetBanStructAnything: (isKeySet & {struct: { ban: _ }, key: "ban"}).result
 }
 
-isKeySet: {
-  struct: {} // set the key we're checking
+isKeySet:: {
+  struct: {...} // set the key we're checking
   key: string
-  result: (struct & {[_]: _ | *"someuniquestringnotSet"})[key] != _|_
+  result: (struct & {[_]: _ | *_|_})[key] != _|_
 }
 
 
-//keysetstruct: { [key=_]: (struct & {[_]: _ | *"someuniquestringnotSet"})[key] != _|_ }
+//keysetstruct: { [key=_]: (struct & {[_]: _ | *_|_})[key] != _|_ }
