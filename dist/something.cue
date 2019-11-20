@@ -1,15 +1,25 @@
+Omit: _
 Omit: {
   orig: {...}
-  pathsToOmit: {[_]: true | {} }
-  nestedOmits: { for k, v in orig {"/(k)"?: Omit & { orig: v, pathsToOmit: pathsToOmit[k] }} }
-  result: _
+  pathsToOmit: _//{[_]: true | {} }
+  //check if key set!!!
+//  nestedOmits: { for k, v in orig {"/(k)": Omit & { orig: v, pathsToOmit: {
+//    if (isKeySet & {struct: pathsToOmit, key: k}).result {
+//      "\(k)": pathsToOmit[k]
+//    }
+//    if !(isKeySet & {struct: pathsToOmit, key: k}).result {
+//      "\(k)": {}
+//    }
+//  }}}}
+  //result: _
   result: {
+    pathsToOmit_ = pathsToOmit
 //  valueIsStruct: (isValueStruct & { value: v }).result
-//  inPathToOmit: (isKeySet & {struct: pathsToOmit, key: k}).result
-//  pathToOmit: inPathToOmit && (isValueBool & {value: pathsToOmit[k]}).result
-    for k, v in orig if !((isKeySet & {struct: pathsToOmit, key: k}).result && (isValueBool & {value: pathsToOmit[k]}).result) {
+//  inPathToOmit: (isKeySet & {struct: pathsToOmit_, key: k}).result
+//  pathToOmit: inPathToOmit && (isValueBool & {value: pathsToOmit_[k]}).result
+    for k, v in orig if (!(isKeySet & {struct: pathsToOmit_, key: "\(k)"}).result || !(isValueBool & {value: pathsToOmit_[k]}).result) {
       if (isValueStruct & { value: v }).result {
-        "\(k)": (nestedOmits & {"/(k)": _ })[k].result
+        "\(k)": (Omit & { orig: v, pathsToOmit: pathsToOmit_[k]}).result
       }
       if !(isValueStruct & { value: v }).result {
         "\(k)": v
@@ -20,10 +30,11 @@ Omit: {
 //      let checks: {
 //      }
 //      if !checks.pathToOmit
-//        { "\(k)": if checks.valueIsStruct then (nestedOmits & {"/(k): _ })[k].result else v }
+//        { "\(k)": if checks.valueIsStruct then (nestedOmits & {"/(k)": _ })[k].result else v }
 
-data: {a: 3, c: d: 4, c: e: 5}
-dataOmitted: (Omit & { orig: data, pathsToOmit: {c: d: true} }).result
+data: {a: 3, c: { d: 4 }, c: e: 5}
+paths: {c: d: true}
+dataOmitted: (Omit & { orig: data, pathsToOmit: paths }).result
 
 test: {
   keySetFoo: (isKeySet & {struct: { ban: "something" }, key: "foo"}).result
@@ -32,6 +43,8 @@ test: {
   keySetBanStruct: (isKeySet & {struct: { ban: { asdfasfoo: "something"} }, key: "ban"}).result
   keySetBanStruct: (isKeySet & {struct: { ban: { asdfasfoo: "something"} }, key: "ban"}).result
   keySetBanStructAnything: (isKeySet & {struct: { ban: _ }, key: "ban"}).result
+  keySetPathThing: (isKeySet & {struct: paths, key: "c"}).result
+
 }
 
 isKeySet:: {
@@ -65,6 +78,7 @@ test: {
   isValueBoolInt: (isValueBool & { value: int }).result
   isValueBoolInt4: (isValueBool & { value: 4 }).result
   isValueBoolString: (isValueBool & { value: "foo" }).result
+
 }
 
 something: 5 & {}
