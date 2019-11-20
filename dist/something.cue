@@ -1,21 +1,29 @@
-Omit:: {
-  orig: {}
+Omit: {
+  orig: {...}
   pathsToOmit: {[_]: true | {} }
-  nestedOmits: { for k, v in data {[k]: Omit & { orig: v, pathsToOmit: pathsToOmit[k] }} }
+  nestedOmits: { for k, v in orig {"/(k)"?: Omit & { orig: v, pathsToOmit: pathsToOmit[k] }} }
+  result: _
   result: {
-    for k, v in orig
-      let checks: {
-        valueIsStruct: (isValueStruct & { value: v }).result
-        inPathToOmit: (isKeySet & {struct: pathsToOmit, key: k}).result
-        pathToOmit: inPathToOmit && (isValueBool & {value: pathsToOmit[k]}).result
+//  valueIsStruct: (isValueStruct & { value: v }).result
+//  inPathToOmit: (isKeySet & {struct: pathsToOmit, key: k}).result
+//  pathToOmit: inPathToOmit && (isValueBool & {value: pathsToOmit[k]}).result
+    for k, v in orig if !((isKeySet & {struct: pathsToOmit, key: k}).result && (isValueBool & {value: pathsToOmit[k]}).result) {
+      if (isValueStruct & { value: v }).result {
+        "\(k)": (nestedOmits & {"/(k)": _ })[k].result
       }
-      if !checks.pathToOmit
-        { "\(k)": if checks.valueIsStruct then (nestedOmits & {"/(k): _ })[k].result else v }
+      if !(isValueStruct & { value: v }).result {
+        "\(k)": v
+      }
+    }
   }
 }
+//      let checks: {
+//      }
+//      if !checks.pathToOmit
+//        { "\(k)": if checks.valueIsStruct then (nestedOmits & {"/(k): _ })[k].result else v }
 
 data: {a: 3, c: d: 4, c: e: 5}
-dataOmitted: { orig: data, pathsToOmit: {c: d: true} }
+dataOmitted: (Omit & { orig: data, pathsToOmit: {c: d: true} }).result
 
 test: {
   keySetFoo: (isKeySet & {struct: { ban: "something" }, key: "foo"}).result
