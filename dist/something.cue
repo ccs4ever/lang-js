@@ -8,7 +8,9 @@
 //  nestedOmits: { for k, v in data {[k]: Omit & { orig: v, pathsToOmit: pathsToOmit[k] }} }
 //  result: {
 //    for k, v in orig
-//      let shouldReove = (isKeySet & {struct: orig, key: k}).result &&
+//      let valueIsStruct = (isValueStruct & { value: v }).result
+//      let inPathToOmit = (isKeySet & {struct: pathsToOmit, key: k}).result
+//      let shouldReove =  valueIsStruct ||
 //        v & bottomOmitValues[k]
 //        nestedOmit[k] &
 //        { orig: v, bottomOmitValues: (bottomOmitValues[k] | *_) }
@@ -39,12 +41,26 @@ isValueStruct:: {
   result: ((value & {}) | *_|_) != _|_
 }
 
+isValueBool:: {
+  value: _
+  result: ((value & bool) | *_|_) != _|_
+}
+
 test: {
   isValueStructStruct: (isValueStruct & { value: { foo: "bar" } }).result
   isValueStructNull: (isValueStruct & { value: null }).result
   isValueStructInt: (isValueStruct & { value: int }).result
   isValueStructInt4: (isValueStruct & { value: 4 }).result
   isValueStructString: (isValueStruct & { value: "foo" }).result
+  isValueStructBool: (isValueStruct & { value: bool }).result
+
+  isValueBoolBoolBool: (isValueBool & { value: true }).result
+  isValueBoolBoolStruct: (isValueBool & { value: { foo: "bar" } }).result
+  isValueBoolStruct: (isValueBool & { value: { foo: "bar" } }).result
+  isValueBoolNull: (isValueBool & { value: null }).result
+  isValueBoolInt: (isValueBool & { value: int }).result
+  isValueBoolInt4: (isValueBool & { value: 4 }).result
+  isValueBoolString: (isValueBool & { value: "foo" }).result
 }
 
 something: 5 & {}
