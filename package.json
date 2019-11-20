@@ -6,8 +6,6 @@
     "build": "webpack"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.2",
-    "babel-loader": "^8.0.6",
     "golang-wasm-async-loader": "^0.4.1",
     "source-map-loader": "^0.2.4",
     "webpack": "^4.41.2",
