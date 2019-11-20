@@ -1,25 +1,21 @@
-//data: {a: 3, c d: 4, c: e: 5}
-//
-//data_: { for k, v in data {[k]: v }}
-//
-//Omit:: {
-//  orig: {}
-//  pathsToOmit: {[_]: true | {} }
-//  nestedOmits: { for k, v in data {[k]: Omit & { orig: v, pathsToOmit: pathsToOmit[k] }} }
-//  result: {
-//    for k, v in orig
-//      let valueIsStruct = (isValueStruct & { value: v }).result
-//      let inPathToOmit = (isKeySet & {struct: pathsToOmit, key: k}).result
-//      let shouldReove =  valueIsStruct ||
-//        v & bottomOmitValues[k]
-//        nestedOmit[k] &
-//        { orig: v, bottomOmitValues: (bottomOmitValues[k] | *_) }
-//      ).result | *v
-//      if (orig & bottomOmitValues) != _|_ && orig & {}
-//        { "\(k)": v } }
-//}
-//
-//dataOmitted: { orig: data, bottomOmitValues:
+Omit:: {
+  orig: {}
+  pathsToOmit: {[_]: true | {} }
+  nestedOmits: { for k, v in data {[k]: Omit & { orig: v, pathsToOmit: pathsToOmit[k] }} }
+  result: {
+    for k, v in orig
+      let checks: {
+        valueIsStruct: (isValueStruct & { value: v }).result
+        inPathToOmit: (isKeySet & {struct: pathsToOmit, key: k}).result
+        pathToOmit: inPathToOmit && (isValueBool & {value: pathsToOmit[k]}).result
+      }
+      if !checks.pathToOmit
+        { "\(k)": if checks.valueIsStruct then (nestedOmits & {"/(k): _ })[k].result else v }
+  }
+}
+
+data: {a: 3, c: d: 4, c: e: 5}
+dataOmitted: { orig: data, pathsToOmit: {c: d: true} }
 
 test: {
   keySetFoo: (isKeySet & {struct: { ban: "something" }, key: "foo"}).result
