@@ -15,9 +15,29 @@ Omit: {
   }
 }
 
+Keep: {
+  orig: {...}
+  pathsToKeep: {[_]: true | {} }
+  result: {
+    pathsToKeep_ = pathsToKeep
+    for k, v in orig {
+      valueIsStruct = (isValueStruct & { value: v }).result
+      inPathToKeep = (isKeySet & {struct: pathsToKeep_, key: k}).result
+      definatelyShouldKeep = inPathToKeep && (isValueBool & {value: pathsToKeep_[k]}).result
+      if definatelyShouldKeep {
+        "\(k)": v
+      }
+      if inPathToKeep && valueIsStruct {
+        "\(k)": (Keep & { orig: v, pathsToKeep: pathsToKeep_[k]}).result
+      }
+    }
+  }
+}
+
 data: {a: 3, c: { d: 4 }, c: e: 5}
 paths: {c: d: true}
 dataOmitted: (Omit & { orig: data, pathsToOmit: paths }).result
+dataKeep: (Keep & { orig: data, pathsToKeep: paths }).result
 
 test: {
   keySetFoo: (isKeySet & {struct: { ban: "something" }, key: "foo"}).result
