@@ -5,10 +5,10 @@
 //Omit:: {
 //  orig: {}
 //  pathsToOmit: {[_]: true | {} }
-//  nestedOmits: { for k, v in data {[k]: Omit }}
-//  result: { 
+//  nestedOmits: { for k, v in data {[k]: Omit & { orig: v, pathsToOmit: pathsToOmit[k] }} }
+//  result: {
 //    for k, v in orig
-//      let shouldReove = (
+//      let shouldReove = (isKeySet & {struct: orig, key: k}).result &&
 //        v & bottomOmitValues[k]
 //        nestedOmit[k] &
 //        { orig: v, bottomOmitValues: (bottomOmitValues[k] | *_) }
@@ -34,5 +34,19 @@ isKeySet:: {
   result: (struct & {[_]: _ | *_|_})[key] != _|_
 }
 
+isValueStruct:: {
+  value: _
+  result: ((value & {}) | *_|_) != _|_
+}
+
+test: {
+  isValueStructStruct: (isValueStruct & { value: { foo: "bar" } }).result
+  isValueStructNull: (isValueStruct & { value: null }).result
+  isValueStructInt: (isValueStruct & { value: int }).result
+  isValueStructInt4: (isValueStruct & { value: 4 }).result
+  isValueStructString: (isValueStruct & { value: "foo" }).result
+}
+
+something: 5 & {}
 
 //keysetstruct: { [key=_]: (struct & {[_]: _ | *_|_})[key] != _|_ }
