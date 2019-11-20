@@ -1,25 +1,38 @@
 package main
 
-import "github.com/gopherjs/gopherjs/js"
+import (
+	"cuelang.org/go/cue"
+	"github.com/gopherjs/gopherjs/js"
+)
+
+type Cue struct {
+	runtime cue.Runtime
+}
+
+func New() *js.Object {
+	return js.MakeWrapper(&Cue{})
+}
 
 func main() {
-	js.Global.Set("pet", map[string]interface{}{
+	js.Global.Set("cue", map[string]interface{}{
 		"New": New,
 	})
 }
 
-type Pet struct {
-	name string
-}
+func (c *Cue) Compile(data string) string {
+	instance, err := c.runtime.Compile("test", data)
+	if err != nil {
+		println(err)
+		return ""
+	}
 
-func New(name string) *js.Object {
-	return js.MakeWrapper(&Pet{name})
-}
+	b, err1 := instance.Value().MarshalJSON()
+	ret := string(b[:])
+	println(ret)
+	if err1 != nil {
+		println(err1)
+		return ""
+	}
 
-func (p *Pet) Name() string {
-	return p.name
-}
-
-func (p *Pet) SetName(name string) {
-	p.name = name
+	return ret
 }
