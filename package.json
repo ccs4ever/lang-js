@@ -2,6 +2,7 @@
   "name": "@cuelang/cue",
   "version": "0.0.1",
   "description": "An npm package for using cuelang from js",
+  "main": "index.js",
   "scripts": {
     "build": "yarn build:go",
     "build:go": "gopherjs build -o ./build/__CUE__.js ./src/cue.go",

@@ -1,6 +1,6 @@
 const test = require('tape');
 
-const { Cue } = require('../src');
+const { Cue } = require('../');
 
 test('Cue', (t) => {
   t.test('MarshallJSON', async (assert) => {
