@@ -8,4 +8,10 @@ Value.prototype.marshalJSON = async function marshallJSON() {
   return json;
 }
 
+Value.prototype.toString = async function toString() {
+  [json, err] = this.__value__.ToString();
+  if (err) { throw err; }
+  return json;
+}
+
 module.exports = Value;

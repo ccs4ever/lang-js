@@ -10,7 +10,7 @@ test('__CUE__', (t) => {
     );
     assert.end();
   });
-  t.test('MarshallJSON', (assert) => {
+  t.test('ToString', (assert) => {
     assert.equal(
       new __CUE__().Compile('test', 'foo: "bar"')[0].Value().ToString()[0],
       `{\n\tfoo: "bar"\n}`
