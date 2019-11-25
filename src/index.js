@@ -1,3 +1,5 @@
-require('../build/cue.js')
-
-module.exports = __CUE__;
+module.exports = {
+  Cue: require('./Cue'),
+  Instance: require('./Instance'),
+  Value: require('./Value'),
+};
