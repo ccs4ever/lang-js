@@ -1,6 +1,6 @@
 {
   "name": "@cuelang/cue",
-  "version": "0.0.14",
+  "version": "0.0.1",
   "description": "An npm package for using cuelang from js",
   "scripts": {
     "build": "yarn build:go",
