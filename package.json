@@ -2,6 +2,7 @@
   "name": "@cuelang/cue",
   "version": "0.0.1",
   "description": "An npm package for using cuelang from js",
+  "license": "Apache-2.0",
   "main": "index.js",
   "scripts": {
     "build": "yarn build:go",
@@ -10,5 +11,9 @@
   },
   "devDependencies": {
     "tape": "^4.11.0"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/cuelang/lang-js.git"
   }
 }
