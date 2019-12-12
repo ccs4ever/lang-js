@@ -1,0 +1,27 @@
+{
+  "name": "@rudolph9/cue",
+  "version": "0.0.0",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+  "description": "An npm package for using cuelang from js",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "files": [
+    "LICENSE",
+    "index.js",
+    "src/*",
+    "build/__CUE__.js",
+    "build/__CUE__.js.map"
+  ],
+  "scripts": {
+    "build": "yarn build:go",
+    "build:go": "gopherjs build -o ./build/__CUE__.js ./src/cue.go",
+    "test": "NODE_ENV=test tape '{,!(node_modules)/**/}*.test.js'"
+  },
+  "devDependencies": {
+    "tape": "^4.11.0"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/rudolph9/lang-js.git"
+  }
+}
