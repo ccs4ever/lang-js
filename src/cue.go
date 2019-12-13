@@ -16,12 +16,13 @@ func (_ *Cue) New() *js.Object {
 	return js.MakeWrapper(&CueRuntime{})
 }
 
-func (_ *Cue) Merge(inst ...CueInstance) *js.Object {
-	var instances []*cue.Instance
+func (_ *Cue) Merge(inst ...*CueInstance) *js.Object {
+	var instances []*(cue.Instance)
 	for i := range inst {
 		instances = append(instances, inst[i].instance)
 	}
-	return js.MakeWrapper(&CueInstance{cue.Merge(instances[:]...)})
+	instance := cue.Merge(instances[:]...)
+	return js.MakeWrapper(&CueInstance{instance})
 }
 
 type CueRuntime struct {

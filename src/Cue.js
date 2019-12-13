@@ -2,11 +2,11 @@ require('../build/__CUE__.js');
 const Instance = require('./Instance.js');
 
 function Cue() {
-  this.__cue__ = new __CUE__.New()
+  this.__cue__ = new __CUE__.New();
 }
 
-Cue.merge = async function merge(...instances) {
-  return __CUE__.Merge(...instances)
+Cue.prototype.merge = async function merge(...instances) {
+  return new Instance(__CUE__.Merge(...instances.map(i => i.__instance__)));
 }
 
 Cue.prototype.compile = async function compile(filename, source) {

@@ -61,5 +61,22 @@ test('__CUE__', (t) => {
     });
     t.end();
   });
+  t.test('Merge', (t) => {
+    const cue = new (__CUE__.New)();
+    const [i0, err0] = cue.Compile('test', '{}');
+    t.ok(i0);
+    t.equal(err0, null);
+    const [i1, err1] = cue.Compile('test', 'foo: "bar"');
+    t.ok(i1);
+    t.equal(err1, null);
+
+    const i2 = __CUE__.Merge(i0, i1);
+    t.ok(i2);
+
+    const [json, err] = i2.Value().MarshalJSON();
+    t.equal(json, '{"foo":"bar"}');
+    t.equal(err, null);
+    t.end();
+  });
   t.end();
 });
