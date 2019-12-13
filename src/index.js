@@ -1,5 +1,9 @@
+const Cue = require('./Cue');
+const Instance = require('./Instance');
+const Value = require('./Value');
+
 module.exports = {
-  Cue: require('./Cue'),
-  Instance: require('./Instance'),
-  Value: require('./Value'),
+  Cue,
+  Instance,
+  Value
 };

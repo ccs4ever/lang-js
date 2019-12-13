@@ -7,11 +7,22 @@ import (
 )
 
 func main() {
-	js.Global.Set("__CUE__", New)
+	js.Global.Set("__CUE__", js.MakeWrapper(&Cue{}))
 }
 
-func New() *js.Object {
+type Cue struct{}
+
+func (_ *Cue) New() *js.Object {
 	return js.MakeWrapper(&CueRuntime{})
+}
+
+func (_ *Cue) Merge(inst ...*CueInstance) *js.Object {
+	var instances []*(cue.Instance)
+	for i := range inst {
+		instances = append(instances, inst[i].instance)
+	}
+	instance := cue.Merge(instances[:]...)
+	return js.MakeWrapper(&CueInstance{instance})
 }
 
 type CueRuntime struct {
