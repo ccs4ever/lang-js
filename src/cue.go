@@ -1,8 +1,11 @@
 package main
 
 import (
+	"log"
 	"cuelang.org/go/cue"
 	"cuelang.org/go/cue/format"
+	_ "cuelang.org/go/cue/errors"
+	_ "cuelang.org/go/encoding"
 	"github.com/gopherjs/gopherjs/js"
 )
 
@@ -23,6 +26,17 @@ func (_ *Cue) Merge(inst ...*CueInstance) *js.Object {
 	}
 	instance := cue.Merge(instances[:]...)
 	return js.MakeWrapper(&CueInstance{instance})
+}
+
+func (r *CueRuntime) ValidateJSON(source string, v *CueValue) error {
+	inst, errC := r.runtime.Compile("ValidateJSON", source);
+	if errC != nil { return errC; }
+	uv := v.value.Unify(inst.Value());
+	if uv.Err() != nil { return uv.Err(); }
+	err := uv.Validate(cue.Concrete(true));
+	log.Println("go Validate error: ");
+	log.Println(err);
+	return err;
 }
 
 type CueRuntime struct {
