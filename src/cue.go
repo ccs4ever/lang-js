@@ -2,10 +2,12 @@ package main
 
 import (
 	"log"
-	"cuelang.org/go/cue"
+	//"cuelang.org/go/cue"
+	"cuelang.org/go/internal/legacy/cue"
 	"cuelang.org/go/cue/format"
 	_ "cuelang.org/go/cue/errors"
 	_ "cuelang.org/go/encoding"
+	"cuelang.org/go/encoding/json"
 	"github.com/gopherjs/gopherjs/js"
 )
 
@@ -29,14 +31,10 @@ func (_ *Cue) Merge(inst ...*CueInstance) *js.Object {
 }
 
 func (r *CueRuntime) ValidateJSON(source string, v *CueValue) error {
-	inst, errC := r.runtime.Compile("ValidateJSON", source);
-	if errC != nil { return errC; }
-	uv := v.value.Unify(inst.Value());
-	if uv.Err() != nil { return uv.Err(); }
-	err := uv.Validate(cue.Concrete(true));
-	log.Println("go Validate error: ");
-	log.Println(err);
-	return err;
+	errV := json.Validate([]byte(source), v.value);
+	log.Println("go json validate:");
+	log.Println(errV);
+	return errV;
 }
 
 type CueRuntime struct {
@@ -45,6 +43,8 @@ type CueRuntime struct {
 
 func (r *CueRuntime) Compile(filename string, source string) (res *js.Object, err error) {
 	instance, err := r.runtime.Compile(filename, source)
+	log.Println("go Compile Err:");
+	log.Println(err);
 	if err != nil {
 		return
 	}
@@ -59,6 +59,23 @@ type CueInstance struct {
 func (i *CueInstance) Value() *js.Object {
 	value := i.instance.Value()
 	return js.MakeWrapper(&CueValue{value})
+}
+
+func (i *CueInstance) LookupField(field string) (res *js.Object, err error) {
+	s, errS := i.instance.Value().Struct();
+	if errS != nil { log.Println("Struct err:"); log.Println(errS); 
+		return nil, errS; }
+	it := s.Fields(cue.All());
+	log.Println("Lookup fields:");
+	for it.Next() {
+		log.Println(it.Label());
+		log.Println(it.Value());
+	}
+	info, err := s.FieldByName(field, true);
+	log.Println("Lookup err: "); 
+	log.Println(err); 
+	res = js.MakeWrapper(&CueValue{info.Value});
+	return;
 }
 
 type CueValue struct {
