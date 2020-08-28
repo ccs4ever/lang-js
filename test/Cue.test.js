@@ -14,6 +14,22 @@ test('Cue', (t) => {
     );
     assert.end();
   });
+  t.test('ValidateJSON valid', async (assert) => {
+    const cue = new Cue()
+    const i = await cue.compile('test', 'foo: string');
+    const v = await i.value();
+    t.doesNotThrow(async ()=>{ await cue.validateJSON(
+        '{"foo": "bar"}', v);}, null, "Validating valid JSON");
+    assert.end();
+  });
+  t.test('ValidateJSON unification failure', async (assert) => {
+    const cue = new Cue()
+    const i = await cue.compile('test', 'foo: number');
+    const v = await i.value();
+    t.throws(async ()=>{ await cue.validateJSON(
+        '{"foo": "bar"}', v);}, /foo/, "foo should fail to unify (string/number)");
+    assert.end();
+  });
   t.test('ToString', async (assert) => {
     const cue = new Cue()
     const instance = await cue.compile('test', 'foo: "bar"');

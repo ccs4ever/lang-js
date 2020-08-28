@@ -15,4 +15,10 @@ Cue.prototype.compile = async function compile(filename, source) {
   return new Instance(instance);
 }
 
+Cue.prototype.validateJSON = async function validateJSON(source, v) {
+	err = this.__cue__.ValidateJSON(source, v.__value__);
+	if (err) { throw err; }
+	return null;
+}
+
 module.exports = Cue;
