@@ -1,7 +1,9 @@
 {
   "name": "@ccs4ever/cue",
   "version": "0.0.0",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "description": "An npm package for using cuelang from js",
   "license": "Apache-2.0",
   "main": "index.js",
@@ -21,7 +23,7 @@
     "tape": "^4.11.0"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/ccs4ever/lang-js.git"
+    "type": "git",
+    "url": "https://github.com/ccs4ever/lang-js.git"
   }
 }
